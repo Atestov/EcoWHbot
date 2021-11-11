@@ -15,7 +15,7 @@ class Products():
     data = pd.DataFrame([],columns=columns)
     
     def __init__(self):
-        sefl.data = pd.read_csv(self._createDataFile_)
+        self.load()
             
     def _createDataFile_(self):
         '''
@@ -41,8 +41,11 @@ class Products():
         #Иногда есть столбец еденица измерения. Но нужные данные всегда в 1, 2 и последних трех столбцах
         self.data.append(appendData, ignore_index = True)
 
-    def save():
+    def save(self):
         self.data.to_csv(self._createDataFile_())
+
+    def load(self):
+        self.data = pd.read_csv(self._createDataFile_())
         
 if __name__ == "__main__":
     # Запуск бота
