@@ -11,7 +11,7 @@ class Products():
     '''
     Класс для работы с товарами
     '''
-    columns = ['id', 'name', 'date', 'available', 'reserve', 'freely']
+    columns = ['date', 'name', 'available', 'reserve', 'freely']
     data = pd.DataFrame([],columns=columns)
     
     def __init__(self):
@@ -31,15 +31,17 @@ class Products():
         file = pd.read_excel(file)
         # У файлов с отстаками плавающее начало таблицы.
         #Иногда есть заголовок, иногда нет. Ищем начало по слову Цена
-        column = 1
-        while file[file.columns[0][column]] != "Цена":
+        column = 0
+        while file[file.columns[0]][column] != "Цена":
             column += 1
         column += 2 #После строки с ценой всегда идет пустая строка
                    
         appendData = file.iloc[column:, [0,1,-3,-2,-1]]
         #Особенность excel файла в непостоянном количестве столбцов.
         #Иногда есть столбец еденица измерения. Но нужные данные всегда в 1, 2 и последних трех столбцах
-        self.data.append(appendData, ignore_index = True)
+        appendData.insert(0, "date", date) #Вставка даты
+        appendData.fillna(0)#Nan -> 0
+        self.data = self.data.append(appendData)
 
     def save(self):
         self.data.to_csv(self._createDataFile_())
