@@ -13,10 +13,10 @@ class Products():
     '''
     data = pd.DataFrame([],columns=['id', 'name', 'date', 'available', 'reserve', 'freely'])
     
-    def __init__(self)
+    def __init__(self):
         sefl.data = pd.read_csv(_createDataFile_)
             
-    def _createDataFile_()
+    def _createDataFile_():
         '''
         Функция создает csv файл для хранения данных если это необходимо.
         Возвращает путь к этому файлу
