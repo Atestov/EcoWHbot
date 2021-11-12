@@ -24,10 +24,10 @@ class Products():
         '''
         dataFile = "data.csv"
         if not os.path.isfile(dataFile):
-            pd.DataFrame([],columns=self.columns).to_csv(dataFile)
+            pd.DataFrame([],columns=self.columns).to_csv(dataFile, index=False)
         return dataFile
 
-    def Add(self, date, file):
+    def _ExtractData_(self, date, file):
         file = pd.read_excel(file)
         # У файлов с отстаками плавающее начало таблицы.
         #Иногда есть заголовок, иногда нет. Ищем начало по слову Цена
@@ -39,14 +39,33 @@ class Products():
         data = file.iloc[column:, [0,1,-3,-2,-1]]
         #Особенность excel файла в непостоянном количестве столбцов.
         #Иногда есть столбец еденица измерения. Но нужные данные всегда в 1, 2 и последних трех столбцах
-    
+        data = data.fillna(0)#Nan -> 0
         data.insert(0, "date", date) #Вставка даты
         data.columns = self.columns
-        data = data.fillna(0)#Nan -> 0
+        return data
+        
+    def Add(self, date, file):
+        '''
+        Добавляет записи за указанную дату.
+        В отличие от Update не меняет существующие записи
+        '''
+        data = self._ExtractData_(date, file)
         self.data = pd.concat([self.data,data])
 
+    def Update(self, date, file, rewriteAll = True):
+        '''
+        Обновляет записи за определенную дату.
+        Если параметр rewriteAll = True то полностью заменяет записи за указанную дату
+        иначе только перезаписывает совпадающие записи
+        '''
+        if rewriteAll:
+            self.data = self.data.loc[self.data['date'] != date]
+        data = self._ExtractData_(date, file)
+        #Добавляем все записи и удаляем дубликаты по дате и названию
+        self.data = pd.concat([self.data, data]).drop_duplicates(['date','name'], keep='last')
+        
     def save(self):
-        self.data.to_csv(self._createDataFile_())
+        self.data.to_csv(self._createDataFile_(), index=False)
 
     def load(self):
         self.data = pd.read_csv(self._createDataFile_())
