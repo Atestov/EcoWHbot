@@ -64,12 +64,45 @@ class Products():
         #Добавляем все записи и удаляем дубликаты по дате и названию
         self.data = pd.concat([self.data, data]).drop_duplicates(['date','name'], keep='last')
         
-    def save(self):
+    def Save(self):
         self.data.to_csv(self._createDataFile_(), index=False)
 
-    def load(self):
+    def Load(self):
         self.data = pd.read_csv(self._createDataFile_())
+
+    def ReplaceSimilarCharacters(df):
+        '''
+        Замена похожих символов и исправление опечаток.
+        На вход принимает DataFrame, возвращает обработанный DataFrame
+        '''
+        #В исходной базе 1с и соответственно выгрузке из неё много опечаток и разных написаний
+        #Например размер горшка С25 может быть записан как С25, С 25, С25 см, С 25 см см
+
+        df = df.str.replace("P", "Р", regex = False) #Замена латинской P на русскую Р
+        df = df.str.replace("p", "р", regex = False) #Замена латинской P на русскую Р
+        df = df.str.replace("C", "С", regex = False) #Замена латинской C на русскую С
+        df = df.str.replace("C", "с", regex = False) #Замена латинской C на русскую С
+        df = df.str.replace("0 new см", "0 см new", regex = False) # Замена 300-400 new см на 300-400 см new
+        df = df.str.replace("см см", "см", regex = False) #"см см" на "см"
+        df = df.str.replace(", см", "", regex = False) # С5, см на С5
         
+        #[ r'Регулярное выражение', 'что нужно заменить в найденной подстроке', 'на что нужно заменить' ]
+        replacement_rules = [
+            [r'С[ ]{1,}\d'," ", ""],
+            [r'Р[ ]{1,}\d'," ", ""],
+            [r'\dсм', "см", " см"],
+            [r', ,', ", ,", ","],
+            [r' , '," , ", ", "],
+            [r'\)см', ")см", ")"],
+            [r'\D\(', "(", " ("],
+            [r'С\d* см', " см", ""],
+            [r'С\d{1,},\d', ",", "."]
+        ]
+        for i in replacement_rules:
+            df = df.str.replace(i[0], lambda x: x.group(0).replace(i[1], i[2]), regex = True)
+        df = df.str.replace(r'\s{2,}', " "), regex = True) #Убираем множественные пробелы
+        
+        return df
 if __name__ == "__main__":
     # Запуск бота
     executor.start_polling(dp, skip_updates=True)
