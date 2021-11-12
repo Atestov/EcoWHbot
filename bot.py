@@ -11,7 +11,7 @@ class Products():
     '''
     Класс для работы с товарами
     '''
-    columns = ['date', 'name', 'available', 'reserve', 'freely']
+    columns = ['date', 'price', 'name', 'available', 'reserve', 'freely']
     data = pd.DataFrame([],columns=columns)
     
     def __init__(self):
@@ -39,9 +39,11 @@ class Products():
         appendData = file.iloc[column:, [0,1,-3,-2,-1]]
         #Особенность excel файла в непостоянном количестве столбцов.
         #Иногда есть столбец еденица измерения. Но нужные данные всегда в 1, 2 и последних трех столбцах
+    
         appendData.insert(0, "date", date) #Вставка даты
-        appendData.fillna(0)#Nan -> 0
-        self.data = self.data.append(appendData)
+        appendData.columns = self.columns
+        appendData = appendData.fillna(0)#Nan -> 0
+        self.data = pd.concat([self.data,appendData])
 
     def save(self):
         self.data.to_csv(self._createDataFile_())
