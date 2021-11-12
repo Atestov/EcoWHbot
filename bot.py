@@ -36,14 +36,14 @@ class Products():
             column += 1
         column += 2 #После строки с ценой всегда идет пустая строка
                    
-        appendData = file.iloc[column:, [0,1,-3,-2,-1]]
+        data = file.iloc[column:, [0,1,-3,-2,-1]]
         #Особенность excel файла в непостоянном количестве столбцов.
         #Иногда есть столбец еденица измерения. Но нужные данные всегда в 1, 2 и последних трех столбцах
     
-        appendData.insert(0, "date", date) #Вставка даты
-        appendData.columns = self.columns
-        appendData = appendData.fillna(0)#Nan -> 0
-        self.data = pd.concat([self.data,appendData])
+        data.insert(0, "date", date) #Вставка даты
+        data.columns = self.columns
+        data = data.fillna(0)#Nan -> 0
+        self.data = pd.concat([self.data,data])
 
     def save(self):
         self.data.to_csv(self._createDataFile_())
