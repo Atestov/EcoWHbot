@@ -1,3 +1,6 @@
+import pandas as pd
+import os.path
+
 class Products():
     '''
     Класс для работы с товарами
@@ -6,7 +9,7 @@ class Products():
     data = pd.DataFrame([],columns=columns)
     
     def __init__(self):
-        self.load()
+        self.Load()
             
     def _createDataFile_(self):
         '''
@@ -33,7 +36,7 @@ class Products():
         data = data.fillna(0)#Nan -> 0
         data.insert(0, "date", date) #Вставка даты
         data.columns = self.columns
-        data['name'] = _ReplaceSimilarCharacters_(data['name'])
+        data['name'] = self._ReplaceSimilarCharacters_(data['name'])
         return data
         
     def Add(self, date, file):
@@ -43,7 +46,8 @@ class Products():
         '''
         data = self._ExtractData_(date, file)
         self.data = pd.concat([self.data,data])
-
+        self.Save()
+        
     def Update(self, date, file, rewriteAll = True):
         '''
         Обновляет записи за определенную дату.
@@ -55,6 +59,7 @@ class Products():
         data = self._ExtractData_(date, file)
         #Добавляем все записи и удаляем дубликаты по дате и названию
         self.data = pd.concat([self.data, data]).drop_duplicates(['date','name'], keep='last')
+        self.Save()
         
     def Save(self):
         self.data.to_csv(self._createDataFile_(), index=False)
@@ -62,7 +67,7 @@ class Products():
     def Load(self):
         self.data = pd.read_csv(self._createDataFile_())
 
-    def _ReplaceSimilarCharacters_(df):
+    def _ReplaceSimilarCharacters_(self, df):
         '''
         Замена похожих символов и исправление опечаток.
         На вход принимает DataFrame, возвращает обработанный DataFrame
@@ -98,6 +103,6 @@ class Products():
         for i in replacement_rules:
             df = df.str.replace(i[0], lambda x: x.group(0).replace(i[1], i[2]), regex = True)
             
-        df = df.str.replace(r'\s{2,}', " "), regex = True) #Убираем множественные пробелы
+        df = df.str.replace(r'\s{2,}', " ", regex = True) #Убираем множественные пробелы
         
         return df

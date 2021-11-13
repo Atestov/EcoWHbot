@@ -1,6 +1,4 @@
 from aiogram import Bot, Dispatcher, executor, types
-import pandas as pd
-import os.path
 from products import Products
 
 # Объект бота
