@@ -1,6 +1,6 @@
 import os.path
 import pickle
-from datetime import date
+from datetime import date, time, timedelta
 
 class Users:
     List = {} #Ассоциативный массив 'id пользователя' : класс user
@@ -26,6 +26,12 @@ class Users:
 
         def getID(self):
             return self.id
+
+        def __add__(self, count):
+            self.curDate += timedelta(days=count)
+        
+        def __sub__(self, count):
+            self.curDate -= timedelta(days=count)
     
     def __init__(self) -> None:
         self.load()
