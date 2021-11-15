@@ -4,10 +4,14 @@ from datetime import date, time, timedelta
 
 class Users:
     List = {} #Ассоциативный массив 'id пользователя' : класс user
+    right = ['access_to_the_bot', 'reading_product_list', 'change_product_list', 'administration']
+    #'access_to_the_bot' - доступ к боту, 'reading_product_list' - доступ к базе товаров,
+    #'change_product_list' - доступ к добавлению товаров, 'administration' - управление правами пользователей и ботом
 
     class User:
         id = ""
         curDate = date.today()
+        right = ['access_to_the_bot']
 
         def __init__(self, id) -> None:
             self.id = id
@@ -32,6 +36,23 @@ class Users:
         
         def __sub__(self, count):
             self.curDate -= timedelta(days=count)
+
+        def setRight(self, right):
+            '''Устанавливает права пользователя'''
+            self.right = right
+
+        def addRight(self, right):
+            '''Добавляет определенное право пользователю'''
+            if not right in self.right:
+                self.right.append(right)
+        
+        def removeRight(self, right):
+            '''Отнимает определенное право у пользователя'''
+            if right in self.right:
+                self.right.remove(right)
+        
+        def getUserRights(self):
+            return self.right
     
     def __init__(self) -> None:
         self.load()
