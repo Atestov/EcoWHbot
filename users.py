@@ -14,6 +14,9 @@ class Users:
         
         def __str__(self) -> str:
             return self.id
+        
+        def __repr__(self):
+            return str(self.id)
     
     def __init__(self) -> None:
         self.load()
@@ -24,7 +27,7 @@ class Users:
     def __setstate__(self, state: dict):
         self.List = state
 
-    def AddUser(self, id):
+    def addUser(self, id):
         self.List[id] = Users.User(id)
 
     def _getDataFile_(self):
@@ -43,3 +46,6 @@ class Users:
     def save(self):
         with open(self._getDataFile_(), "wb") as fp:
             pickle.dump(self.List, fp)
+
+    def __repr__(self):
+        return str(self.List)
