@@ -1,13 +1,13 @@
 import os.path
 import pickle
-from typing import List
+from datetime import date
 
 class Users:
     List = {} #Ассоциативный массив 'id пользователя' : класс user
 
     class User:
-        #Как таковой класс User не нужен. Я добавляю его на случай если потребуется расширить список хранимых данных о пользователе
         id = ""
+        curDate = date.today()
 
         def __init__(self, id) -> None:
             self.id = id
@@ -17,6 +17,15 @@ class Users:
         
         def __repr__(self):
             return str(self.id)
+        
+        def setDate(self, date):
+            self.curDate = date
+
+        def getDate(self):
+            return self.curDate
+
+        def getID(self):
+            return self.id
     
     def __init__(self) -> None:
         self.load()
@@ -29,6 +38,14 @@ class Users:
 
     def addUser(self, id):
         self.List[id] = Users.User(id)
+
+    def delUser(self, id):
+        del(self.List[id])
+
+    def setDate(self, date):
+        '''Устанавливает дату для всех пользователей'''
+        for user in self:
+            user.setDate(date)
 
     def _getDataFile_(self):
         '''
@@ -49,3 +66,10 @@ class Users:
 
     def __repr__(self):
         return str(self.List)
+
+    def __getitem__(self, i):
+        #Переопределяем для того что бы можно было писать users[num] вместо users.List[num]
+        return self.List[i]
+    
+    def __iter__(self):
+        return (self.List[i] for i in self.List.keys())
