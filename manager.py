@@ -1,4 +1,5 @@
-from numpy import product
+from datetime import datetime
+from dateutil.parser import parse
 from products import Products
 from users import Users
 
@@ -11,7 +12,7 @@ class Manager():
         True: операция выполнена успешно
         Данные: если запрашивались данные
     '''
-    product = Product()
+    product = Products()
     users = Users()
 
     def checkRight(self, user, operation):
@@ -21,7 +22,10 @@ class Manager():
         return not self.checkRight(user, 'access')
 
     def getDate(self, user):
-        return users[user].getDate()
+        return self.users[user].getDate()
+    
+    def setDate(self, user, date):
+        self.users[user].setDate(parse(date).date())
     
     def addProducts(self, user, file, date=False):
         if not self.checkRight(user, 'change'):
@@ -41,10 +45,14 @@ class Manager():
         self.product.Update(date, file, rewrite)
         return True
 
-    def search(self, user, request, data=False]):
+    def search(self, user, request, data=False):
         if not self.checkRight(user, 'reading'):
             return -1
 
         date = self.getDate(user) if not date else date
 
         return self.product.search(date, request)
+
+    def register(self, user):
+        self.users.addUser(user)
+        return True

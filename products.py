@@ -9,7 +9,7 @@ class Products():
     data = pd.DataFrame([],columns=columns)
     
     def __init__(self):
-        self.Load()
+        self.load()
             
     def _createDataFile_(self):
         '''
@@ -46,7 +46,7 @@ class Products():
         '''
         data = self.__extractData__(date, file)
         self.data = pd.concat([self.data,data])
-        self.Save()
+        self.save()
         
     def update(self, date, file, rewriteAll = True):
         '''
@@ -59,7 +59,7 @@ class Products():
         data = self.__extractData__(date, file)
         #Добавляем все записи и удаляем дубликаты по дате и названию
         self.data = pd.concat([self.data, data]).drop_duplicates(['date','name'], keep='last')
-        self.Save()
+        self.save()
         
     def save(self):
         self.data.to_csv(self._createDataFile_(), index=False)
