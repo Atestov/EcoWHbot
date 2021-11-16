@@ -25,7 +25,12 @@ class Manager():
         return self.users[user].getDate()
     
     def setDate(self, user, date):
-        self.users[user].setDate(parse(date).date())
+        date = parse(date).date()
+        if date:
+            self.users[user].setDate(date)
+            return date.strftime('%d/%m/%Y')
+        else:
+            return False
     
     def addProducts(self, user, file, date=False):
         if not self.checkRight(user, 'change'):

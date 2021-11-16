@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types.message import Message
 from manager import Manager
 
 # Объект бота
@@ -13,6 +14,7 @@ Messages = {
     'access_denied':"Ой, кажется у тебя недостаточно прав для этого.",
     'help':"Здесь будет справка, когда нибудь.",
     'set_date':'Дата обновлена. Сейчас {date}',
+    'set_date_error':'Ошибка. Дата {date} не распознана. Попробуйте записать в виде 7/11/21'
 }
 
 @dp.message_handler(commands=['start'])
@@ -27,8 +29,12 @@ async def process_help_command(message: types.Message):
 
 @dp.message_handler(state='*', commands=['setdate'])
 async def process_setdate_command(message: types.Message):
-    MrB.setDate(message.from_user.id, message.get_args())
-    await message.reply(Messages['set_date'].format(date=message.get_args()))
+    res = MrB.setDate(message.from_user.id, message.get_args())
+    if res:
+        await message.reply(Messages['set_date'].format(date=res))
+    else:
+        await message.reply(Messages['set_date_error'].format(date=message.get_args()))
+
 
 if __name__ == "__main__":
     # Запуск бота
