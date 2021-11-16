@@ -3,10 +3,13 @@ import pickle
 from datetime import date, time, timedelta
 
 class Users:
+    '''
+    Класс для работы с пользователями. 
+    '''
     List = {} #Ассоциативный массив 'id пользователя' : класс user
-    right = ['access_to_the_bot', 'reading_product_list', 'change_product_list', 'administration']
-    #'access_to_the_bot' - доступ к боту, 'reading_product_list' - доступ к базе товаров,
-    #'change_product_list' - доступ к добавлению товаров, 'administration' - управление правами пользователей и ботом
+    right = ['access', 'reading', 'change', 'admin']
+    #'access' - доступ к боту, 'reading' - доступ к базе товаров,
+    #'change' - доступ к добавлению товаров, 'admin' - управление правами пользователей и ботом
 
     class User:
         id = ""
