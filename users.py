@@ -53,6 +53,9 @@ class Users:
         
         def getUserRights(self):
             return self.right
+
+        def hasRight(self, right):
+            return right in self.right
     
     def __init__(self) -> None:
         self.load()
