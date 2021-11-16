@@ -1,5 +1,4 @@
 from aiogram import Bot, Dispatcher, executor, types
-from products import Products
 
 # Объект бота
 bot = Bot(token=open("bot-token.txt", "r").read())
