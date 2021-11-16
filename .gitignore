@@ -1,3 +1,4 @@
 bot-token.txt
 data.csv
 users.pkl
+__pycache__/*
