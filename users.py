@@ -14,7 +14,7 @@ class Users:
     class User:
         id = ""
         curDate = date.today()
-        right = ['access_to_the_bot']
+        right = ['access']
 
         def __init__(self, id) -> None:
             self.id = id
