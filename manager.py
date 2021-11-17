@@ -10,6 +10,7 @@ class Manager():
     Методы возвращают: 
         -1: доступ запрещен
         True: операция выполнена успешно
+        False: возникла ошибка
         Данные: если запрашивались данные
     '''
     product = Products()
@@ -25,12 +26,16 @@ class Manager():
         return self.users[user].getDate()
     
     def setDate(self, user, date):
-        date = parse(date).date()
-        if date:
-            self.users[user].setDate(date)
-            return date.strftime('%d/%m/%Y')
-        else:
+        try:
+            date = parse(date, dayfirst=len(date)>=4).date()
+            # dayfirst определяет что идет раньше день или месяц. 
+            # Предполагается что пользователи будут вводить дату в формате d m или d m y
+            # дату в формате y m d определит неправильно. 
+        except:
             return False
+        self.users[user].setDate(date)
+        self.users.save()
+        return date.strftime('%d/%m/%Y')
     
     def addProducts(self, user, file, date=False):
         if not self.checkRight(user, 'change'):
@@ -60,4 +65,5 @@ class Manager():
 
     def register(self, user):
         self.users.addUser(user)
+        self.users.save()
         return True
