@@ -3,7 +3,7 @@ from aiogram.types.message import Message
 from manager import Manager
 
 # Объект бота
-bot = Bot(token=open("bot-token.txt", "r").read())
+bot = Bot(token=open("bot-token.txt", "r").read(), parse_mode=types.ParseMode.HTML)
 # Диспетчер для бота
 dp = Dispatcher(bot)
 # Подключаем управляющего
@@ -35,6 +35,16 @@ async def process_setdate_command(message: types.Message):
     else:
         await message.reply(Messages['set_date_error'].format(date=message.get_args()))
 
+@dp.message_handler(commands=['getusers'])
+async def process_getusers_command(message: types.Message):
+    res = MrB.getUsers(message.from_user.id)
+    if res == -1:
+        await message.answer(Messages['access_denied'])
+    else:
+        text = "<b>Список пользователей:</b>\n"
+        for i in res:
+            text += "Пользователь: {id} \nС правами {right}\n".format(id=i[0], right=i[1])
+        await message.answer(text)
 
 if __name__ == "__main__":
     # Запуск бота

@@ -64,6 +64,13 @@ class Manager():
         return self.product.search(date, request)
 
     def register(self, user):
-        self.users.addUser(user)
-        self.users.save()
+        if not user in self.users:
+            self.users.addUser(user)
+            self.users.save()
         return True
+    
+    def getUsers(self, user):
+        if not self.checkRight(user, 'admin'):
+            return -1
+        
+        return [[user.getID(), user.getUserRights()] for user in self.users]
