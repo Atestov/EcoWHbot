@@ -15,15 +15,22 @@ class Users:
         id = ""
         curDate = date.today()
         right = ['access']
+        name = ""
 
         def __init__(self, id) -> None:
             self.id = id
         
         def __str__(self) -> str:
-            return self.id
+            return str(self.name) if self.name else self.id
         
         def __repr__(self):
-            return str(self.id)
+            return str(self.name) if self.name else self.id
+
+        def setName(self, name):
+            self.name = name
+
+        def getName(self):
+            return self.name
         
         def setDate(self, date):
             self.curDate = date
