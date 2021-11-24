@@ -73,4 +73,10 @@ class Manager():
         if not self.checkRight(user, 'admin'):
             return -1
         
-        return [[user.getID(), user.getUserRights()] for user in self.users]
+        return [{'id':user.getID(), 'right':user.getUserRights(), 'name':user.getName()} for user in self.users]
+
+    def setUserName(self, user, name):
+        lastName = self.users[user].getName()
+        self.users[user].setName(name)
+        self.users.save()
+        return {'old':lastName, 'new':name}

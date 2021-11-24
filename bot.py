@@ -14,7 +14,9 @@ Messages = {
     'access_denied':"Ой, кажется у тебя недостаточно прав для этого.",
     'help':"Здесь будет справка, когда нибудь.",
     'set_date':'Дата обновлена. Сейчас {date}',
-    'set_date_error':'Ошибка. Дата {date} не распознана. Попробуйте записать в виде 7/11/21'
+    'set_date_error':'Ошибка. Дата {date} не распознана. Попробуйте записать в виде 7/11/21',
+    'change_name':'Прощай, {old}, теперь я буду звать тебя {new}!',
+    'set_name':'Привет {new}',
 }
 
 @dp.message_handler(commands=['start'])
@@ -22,7 +24,14 @@ async def process_start_command(message: types.Message):
     MrB.register(message.from_user.id)
     await message.reply(Messages['start'])
 
-
+@dp.message_handler(state='*', commands=['setname', 'myname'])
+async def process_reg_command(message: types.Message):
+    res = MrB.setUserName(message.from_user.id, message.get_args())
+    if res['old']:
+        await message.answer(Messages['change_name'].format(old=res['old'], new=res['new']))
+    else:
+        await message.answer(Messages['set_name'].format(new=res['new']))
+    
 @dp.message_handler(commands=['help'])
 async def process_help_command(message: types.Message):
     await message.reply(Messages['help'])
@@ -43,7 +52,8 @@ async def process_getusers_command(message: types.Message):
     else:
         text = "<b>Список пользователей:</b>\n"
         for i in res:
-            text += "Пользователь: {id} \nС правами {right}\n".format(id=i[0], right=i[1])
+            text += "Пользователь: {name}[{id}] \nС правами {right}\n".format(
+                id=i['id'],name=i['name'],right=i['right'])
         await message.answer(text)
 
 if __name__ == "__main__":
