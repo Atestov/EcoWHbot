@@ -26,6 +26,10 @@ class Manager():
         return self.users[user].getDate()
     
     def setDate(self, user, date):
+        '''
+        Принимает два параметра: пользователь (id) и дату устанавливаемую для пользователя
+        Возвращает: False - не удалось распознать дату; строку, содержащую дату - новая дата пользователя
+        '''
         try:
             date = parse(date, dayfirst=len(date)>=4).date()
             # dayfirst определяет что идет раньше день или месяц. 
@@ -38,6 +42,11 @@ class Manager():
         return date.strftime('%d/%m/%Y')
     
     def addProducts(self, user, file, date=False):
+        '''
+        Добавляет данные из файла в базу данных. Не изменяет существующие данные.
+        Принимает id пользователя, путь к файлу, [строка содержащая дату файла, по умолчанию - сегодня]
+        Возвращает -1 - если у пользователя нет прав на редактирование, True - если файл добавлен
+        '''
         if not self.checkRight(user, 'change'):
             return -1
 
